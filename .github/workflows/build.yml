@@ -1,0 +1,70 @@
+name: build
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build frontend
+        working-directory: web
+        run: |
+          npm install
+          npm run build
+
+      - name: Install backend deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: Build with PyInstaller
+        run: pyinstaller --noconfirm packaging/wxvideo.spec
+
+      - name: Package (zip) + SHA256
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if (-not $tag) { $tag = "dev-${{ github.sha }}" }
+          $zip = "wxvideo-$tag-win64.zip"
+          Compress-Archive -Path dist/wxvideo/* -DestinationPath $zip
+          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash
+          "$hash  $zip" | Out-File -Encoding ascii "$zip.sha256"
+          echo "ZIP=$zip" >> $env:GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wxvideo-win64
+          path: |
+            wxvideo-*.zip
+            wxvideo-*.zip.sha256
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            wxvideo-*.zip
+            wxvideo-*.zip.sha256
+          body: |
+            微信视频号下载器（Windows x64）
+
+            - 解压后运行 `wxvideo.exe`；首次请到「设置」安装根证书。
+            - 本包未做代码签名，Windows SmartScreen 可能提示；可核对随附的 SHA256。
+            - 仅供个人学习/备份，禁止传播或商用。

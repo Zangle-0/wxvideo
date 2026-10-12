@@ -1,0 +1,7 @@
+mitmproxy>=12
+fastapi
+uvicorn[standard]
+httpx
+pydantic
+pywebview
+cryptography
