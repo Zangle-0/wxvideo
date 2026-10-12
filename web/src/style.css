@@ -27,6 +27,7 @@ a { color: var(--accent); }
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 8px 10px 16px; font-weight: 600; }
 .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 10px var(--accent-2); }
+.brand small { color: var(--fg-2); font-weight: 400; font-size: 12px; }
 .nav { display: flex; flex-direction: column; gap: 4px; }
 .nav button {
   text-align: left; background: transparent; border: 0; color: var(--fg-2);

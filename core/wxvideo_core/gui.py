@@ -8,7 +8,7 @@ import webview
 
 from .runtime import Runtime
 
-WINDOW_TITLE = "wxvideo · 微信视频号下载器"
+WINDOW_TITLE = "wxvideo · 微信视频号下载器 by zangle"
 
 
 def run_gui() -> None:

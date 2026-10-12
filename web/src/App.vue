@@ -84,7 +84,7 @@ onMounted(async () => {
 <template>
   <div class="app">
     <aside class="sidebar">
-      <div class="brand"><span class="dot" /> wxvideo</div>
+      <div class="brand"><span class="dot" /> wxvideo <small>by zangle</small></div>
       <div class="nav">
         <button :class="{ active: tab === 'listen' }" @click="tab = 'listen'">监听 / 下载</button>
         <button :class="{ active: tab === 'library' }" @click="tab = 'library'">库与历史</button>
